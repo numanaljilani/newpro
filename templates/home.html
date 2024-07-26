@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+<form method="post" class="buttons text-white">
+  <h3 class='text-xl font-semibold text-white'>Enter The Chat Room</h3>
+  <div>
+    <label class='text-lg text-white'>Name:</label>
+    <input
+      type="text"
+      placeholder="Pick a name!"
+      class='bg-[#1E1C26] py-3 px-3 rounded-lg text-white border border-gray-400'
+      name="name"
+      value="{{name}}"
+    />
+  </div>
+  <div class="join">
+    <input type="text" class='bg-[#1E1C26] py-3 px-3 rounded-lg text-white border border-gray-400' placeholder="Room Code" name="code" value="{{code}}" />
+    <button type="submit" class='bg-blue-700 px-4 mx-2 rounded-lg text-white  py-2 px-2' name="join">Join a Room</button>
+  </div>
+  <button type="submit" class='bg-blue-700 px-4 mx-2 rounded-lg text-white   py-2 px-2' name="create" class="create-btn">Create a Room</button>
+  {% if error %}
+  <ul>
+    <li>{{error}}</li>
+  </ul>
+  {% endif %}
+</form>
+{% endblock %}

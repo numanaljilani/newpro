@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="message-box bg-[#252331] sc">
+  <h2 class='text-gray-200 text-xl font-bold'>Chat Room: {{ code }} {{ me }}</h2>
+  <div class="messages flex flex-col" id="messages"></div>
+  <div class="inputs">
+    <input
+      type="text"
+      placeholder="Message"
+      name="message"
+      id="message"
+      class='bg-[#1E1C26] py-3 px-3 rounded-lg text-white border border-gray-400'
+    />
+    <button class='bg-blue-700 px-4 mx-2 rounded-lg text-white' type="button" name="send" id="send-btn" onClick="sendMessage()">
+      Send
+    </button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var socketio = io();
+
+  const messages = document.getElementById("messages");
+
+  const createMessage = (name, msg, me) => {
+    console.log(name, me, name === me);
+
+    const isMe = name === me;
+    const content = `
+        <div class="w-1/2 rounded-b-lg rounded-tr-lg mt-2 px-3 py-2 flex flex-col text-gray-200 ${isMe ? 'bg-[#2970FD] float-right' : 'bg-gray-500'} border border-black">
+            <span>
+                <strong>${name}</strong>: ${msg}
+            </span>
+            <span class="muted text-gray-200">
+                ${new Date().toLocaleString()}
+            </span>
+        </div>
+    `;
+
+    const messageElement = document.createElement('div');
+    messageElement.innerHTML = content;
+    messages.appendChild(messageElement);
+    messages.scrollTop = messages.scrollHeight;
+  };
+
+  socketio.on("message", (data) => {
+    createMessage(data.name, data.message, "{{ me }}");
+  });
+
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value === "") return;
+    socketio.emit("message", { data: message.value });
+
+    message.value = "";
+  };
+</script>
+
+{% for msg in messages %}
+<script type="text/javascript">
+  createMessage("{{ msg.name }}", "{{ msg.message }}", "{{ me }}");
+</script>
+{% endfor %}
+{% endblock %}
